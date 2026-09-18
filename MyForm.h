@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <iterator>
+
 #pragma once
 
 namespace lab1 {
@@ -28,8 +29,9 @@ namespace lab1 {
 		{
 			InitializeComponent();
 			arr = new vector<int>();
-			max_inx_aray = new vector<int>();
+			
 			stop_timer = gcnew System::Diagnostics::Stopwatch();
+			sort_step = 0;
 		}
 
 
@@ -47,11 +49,11 @@ namespace lab1 {
 				delete arr;
 				arr = nullptr;
 			}
-			if (max_inx_aray) {
-				delete max_inx_aray;
-				max_inx_aray = nullptr;
-			}
+
 		}
+
+		
+
 	private: System::Windows::Forms::Label^ ArraySizeLabel;
 	private: System::Windows::Forms::TextBox^ ArraySizeTextBox;
 	private: System::Windows::Forms::Button^ GenRandNumButton;
@@ -79,8 +81,7 @@ namespace lab1 {
 	
 	private: int arr_size;
 	private: vector<int>* arr;
-	private: vector<int>* max_inx_aray;
-	private: bool isSorted = false;
+	private: int sort_step;
 	private: System::Diagnostics::Stopwatch^ stop_timer;
 	private: System::Windows::Forms::Label^ IsSortedLabel;
 	private: System::Windows::Forms::Label^ CountTimerLabel;
@@ -247,6 +248,50 @@ namespace lab1 {
 
 		}
 #pragma endregion
+
+	// Quick Sort
+
+	int partition(std::vector<int>& arr_in, int low, int high) {
+		if (low < 0 || high < low) return low;
+		// choose the pivot
+		int pivot = arr_in[high];
+
+		// index of smaller element and indicates
+		// the right position of pivot found so far
+		int i = low - 1;
+
+		// Traverse arr[low..high-1] and move larger elements to right
+		for (int j = low; j < high; ++j) {
+			if (arr_in[j] > pivot) {
+				i++;
+				swap(arr_in[i], arr_in[j]);
+			}
+		}
+
+		// move pivot after smaller elements and return its position
+		swap(arr_in[i + 1], arr_in[high]);
+
+		sort_step++;
+		// вивід проміжного результату
+		ResultSortedArrayLabel->Text += "Step: " + Convert::ToString(sort_step) + " ";
+
+			for (int k = 0; k < arr_in.size(); k++) {
+				ResultSortedArrayLabel->Text += " " + Convert::ToString(arr_in[k]);
+			}
+			ResultSortedArrayLabel->Text += "\n";
+		
+		return i + 1;
+	}
+
+	void quickSort(std::vector<int>& arr_in, int low, int high) {
+		if (low < high) {
+			int pi = partition(arr_in, low, high);
+			//рекурсія
+			quickSort(arr_in, low, pi - 1);
+			quickSort(arr_in, pi + 1, high);
+		}
+	}
+
 private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -259,10 +304,10 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 			}
 		}
 
-
 		srand(time(0));
 		arr->clear();
 		arr->reserve(arr_size);
+		
 		//створення масиву + заповнення випадковими числами
 
 		for (int i = 0; i < arr_size;i++) {
@@ -270,60 +315,43 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
 		}
 
-		//індекс на макс. елемент в масиві
-		vector<int>::iterator max_index_it = max_element(arr->begin(), arr->end());
+		OutputArrayLabel->Text += "\n";
 
-		//копіювання масиву після макс. елемента
-		max_inx_aray->assign(max_index_it + 1, arr->end());
+		for (vector<int>::iterator i = arr->begin(); i != arr->end();) {
+			if (*i % 3 == 0) {
+				i = arr->erase(i);
+			}
+			else {
+				*i = (*i) * (*i);
+				i++;
+			}
+			
+		}
 
-		//видаляє елементи після макс.елемента, шоsб потім вставити туди відсортований масив
-		arr->erase(max_index_it+1, arr->end());
+		for (vector<int>::iterator i = arr->begin(); i != arr->end(); i++) {
+			OutputArrayLabel->Text += " " + Convert::ToString(*i);
+		}
 		
 }
 private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	
 	ResultSortedArrayLabel->Text = "";
 	stop_timer->Reset();
+
+
 	stop_timer->Start();
 
-	//сортування Шела
-	if (!is_sorted(max_inx_aray->begin(), max_inx_aray->end())) {
-		int size = max_inx_aray->size();
-
-		for (int gap = size / 2; gap > 0; gap /= 2) {
-			for (int i = gap; i < size; i++) {
-
-				int temp = (*max_inx_aray)[i];
-				int j = i;
-
-				while (j >= gap && (*max_inx_aray)[j - gap] < temp) {
-					(*max_inx_aray)[j] = (*max_inx_aray)[j - gap];
-					j -= gap;
-				}
-				(*max_inx_aray)[j] = temp;
-			}
-			ResultSortedArrayLabel->Text += "Gap: " + gap + " ";
-			for (int k = 0; k < size; k++) {
-				ResultSortedArrayLabel->Text +=" " + Convert::ToString((*max_inx_aray)[k]);
-			}
-			ResultSortedArrayLabel->Text += "\n";
-		}
-	}
+	quickSort(*arr, 0, arr->size() - 1);
 
 	stop_timer->Stop();
 	
-	// перевірка чи відсортований масив
-	!is_sorted(max_inx_aray->begin(), max_inx_aray->end()) ? IsSortedLabel->Text = "Sorted!" : IsSortedLabel->Text = "Not Sorted!";
 	
-	//дописує до зрізаного масиву відсортовану частину
-	arr->insert(arr->end(), max_inx_aray->begin(), max_inx_aray->end());
-
 	//вивід часу + відсортованого масиву
 	CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
 
-	for (int i = 0; i < arr_size;i++) {
-		ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
-	}
+	//for (int i = 0; i < arr->size();i++) {
+	//	ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
+	//}
 }
 };
 }
