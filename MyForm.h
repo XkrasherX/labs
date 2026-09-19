@@ -84,6 +84,12 @@ namespace lab1 {
 	private: int sort_step;
 	private: System::Diagnostics::Stopwatch^ stop_timer;
 	private: System::Windows::Forms::Label^ IsSortedLabel;
+	private: System::Windows::Forms::Label^ PartialResultLabel;
+	private: System::Windows::Forms::Label^ PartialResultOutputLabel;
+	private: System::Windows::Forms::Label^ IndividualTaskLabel;
+	private: System::Windows::Forms::Label^ IndividualTaskOutputLabel;
+
+
 	private: System::Windows::Forms::Label^ CountTimerLabel;
 
 
@@ -105,6 +111,10 @@ namespace lab1 {
 			this->TimerLabel = (gcnew System::Windows::Forms::Label());
 			this->CountTimerLabel = (gcnew System::Windows::Forms::Label());
 			this->IsSortedLabel = (gcnew System::Windows::Forms::Label());
+			this->PartialResultLabel = (gcnew System::Windows::Forms::Label());
+			this->PartialResultOutputLabel = (gcnew System::Windows::Forms::Label());
+			this->IndividualTaskLabel = (gcnew System::Windows::Forms::Label());
+			this->IndividualTaskOutputLabel = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// ArraySizeLabel
@@ -145,7 +155,7 @@ namespace lab1 {
 			this->ResultLabel->AutoSize = true;
 			this->ResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->ResultLabel->Location = System::Drawing::Point(200, 300);
+			this->ResultLabel->Location = System::Drawing::Point(200, 396);
 			this->ResultLabel->Name = L"ResultLabel";
 			this->ResultLabel->Size = System::Drawing::Size(87, 29);
 			this->ResultLabel->TabIndex = 4;
@@ -156,7 +166,7 @@ namespace lab1 {
 			this->ResultSortedArrayLabel->AutoSize = true;
 			this->ResultSortedArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 300);
+			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 396);
 			this->ResultSortedArrayLabel->Name = L"ResultSortedArrayLabel";
 			this->ResultSortedArrayLabel->Size = System::Drawing::Size(0, 29);
 			this->ResultSortedArrayLabel->TabIndex = 5;
@@ -210,7 +220,7 @@ namespace lab1 {
 			this->CountTimerLabel->AutoSize = true;
 			this->CountTimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->CountTimerLabel->Location = System::Drawing::Point(171, 396);
+			this->CountTimerLabel->Location = System::Drawing::Point(64, 436);
 			this->CountTimerLabel->Name = L"CountTimerLabel";
 			this->CountTimerLabel->Size = System::Drawing::Size(0, 29);
 			this->CountTimerLabel->TabIndex = 10;
@@ -220,16 +230,62 @@ namespace lab1 {
 			this->IsSortedLabel->AutoSize = true;
 			this->IsSortedLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->IsSortedLabel->Location = System::Drawing::Point(200, 349);
+			this->IsSortedLabel->Location = System::Drawing::Point(200, 396);
 			this->IsSortedLabel->Name = L"IsSortedLabel";
 			this->IsSortedLabel->Size = System::Drawing::Size(0, 29);
 			this->IsSortedLabel->TabIndex = 11;
+			// 
+			// PartialResultLabel
+			// 
+			this->PartialResultLabel->AutoSize = true;
+			this->PartialResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->PartialResultLabel->Location = System::Drawing::Point(200, 260);
+			this->PartialResultLabel->Name = L"PartialResultLabel";
+			this->PartialResultLabel->Size = System::Drawing::Size(152, 29);
+			this->PartialResultLabel->TabIndex = 12;
+			this->PartialResultLabel->Text = L"Partial result:";
+			// 
+			// PartialResultOutputLabel
+			// 
+			this->PartialResultOutputLabel->AutoSize = true;
+			this->PartialResultOutputLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->PartialResultOutputLabel->Location = System::Drawing::Point(376, 260);
+			this->PartialResultOutputLabel->Name = L"PartialResultOutputLabel";
+			this->PartialResultOutputLabel->Size = System::Drawing::Size(0, 29);
+			this->PartialResultOutputLabel->TabIndex = 13;
+			// 
+			// IndividualTaskLabel
+			// 
+			this->IndividualTaskLabel->AutoSize = true;
+			this->IndividualTaskLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->IndividualTaskLabel->Location = System::Drawing::Point(200, 219);
+			this->IndividualTaskLabel->Name = L"IndividualTaskLabel";
+			this->IndividualTaskLabel->Size = System::Drawing::Size(170, 29);
+			this->IndividualTaskLabel->TabIndex = 14;
+			this->IndividualTaskLabel->Text = L"Individual task:";
+			// 
+			// IndividualTaskOutputLabel
+			// 
+			this->IndividualTaskOutputLabel->AutoSize = true;
+			this->IndividualTaskOutputLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->IndividualTaskOutputLabel->Location = System::Drawing::Point(376, 219);
+			this->IndividualTaskOutputLabel->Name = L"IndividualTaskOutputLabel";
+			this->IndividualTaskOutputLabel->Size = System::Drawing::Size(0, 29);
+			this->IndividualTaskOutputLabel->TabIndex = 15;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(708, 584);
+			this->Controls->Add(this->IndividualTaskOutputLabel);
+			this->Controls->Add(this->IndividualTaskLabel);
+			this->Controls->Add(this->PartialResultOutputLabel);
+			this->Controls->Add(this->PartialResultLabel);
 			this->Controls->Add(this->IsSortedLabel);
 			this->Controls->Add(this->CountTimerLabel);
 			this->Controls->Add(this->TimerLabel);
@@ -243,6 +299,7 @@ namespace lab1 {
 			this->Controls->Add(this->ArraySizeLabel);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -250,17 +307,18 @@ namespace lab1 {
 #pragma endregion
 
 	// Quick Sort
-
 	int partition(std::vector<int>& arr_in, int low, int high) {
 		if (low < 0 || high < low) return low;
-		// choose the pivot
+
+		// вибрати опору high - останій елемент
 		int pivot = arr_in[high];
 
-		// index of smaller element and indicates
-		// the right position of pivot found so far
+
 		int i = low - 1;
 
-		// Traverse arr[low..high-1] and move larger elements to right
+		//Обхід масиву arr[low..high-1] та переміщення всіх більших елементів за опору 
+		// вправо (за спаданням) arr_in[j] > pivot
+		// вліво (за зростанням) arr_in[j] < pivot
 		for (int j = low; j < high; ++j) {
 			if (arr_in[j] > pivot) {
 				i++;
@@ -268,24 +326,26 @@ namespace lab1 {
 			}
 		}
 
-		// move pivot after smaller elements and return its position
+		// перемістити опору між "підмасивами", де зліва більші елементи, справа - менші
 		swap(arr_in[i + 1], arr_in[high]);
 
-		sort_step++;
 		// вивід проміжного результату
-		ResultSortedArrayLabel->Text += "Step: " + Convert::ToString(sort_step) + " ";
+		sort_step++;
+		PartialResultOutputLabel->Text += "Step: " + Convert::ToString(sort_step) + " ";
 
 			for (int k = 0; k < arr_in.size(); k++) {
-				ResultSortedArrayLabel->Text += " " + Convert::ToString(arr_in[k]);
+				PartialResultOutputLabel->Text += " " + Convert::ToString(arr_in[k]);
 			}
-			ResultSortedArrayLabel->Text += "\n";
+			PartialResultOutputLabel->Text += "\n";
 		
+		// повертає індекс на опору pivot
 		return i + 1;
 	}
 
 	void quickSort(std::vector<int>& arr_in, int low, int high) {
 		if (low < high) {
 			int pi = partition(arr_in, low, high);
+
 			//рекурсія
 			quickSort(arr_in, low, pi - 1);
 			quickSort(arr_in, pi + 1, high);
@@ -295,7 +355,9 @@ namespace lab1 {
 private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		OutputArrayLabel->Text = "";
+		
+	OutputArrayLabel->Text = "";
+	IndividualTaskOutputLabel->Text = " ";
 
 		if (!String::IsNullOrWhiteSpace(ArraySizeTextBox->Text)) {
 			arr_size = Convert::ToInt32(ArraySizeTextBox->Text);
@@ -307,37 +369,37 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 		srand(time(0));
 		arr->clear();
 		arr->reserve(arr_size);
+		sort_step = 0;
 		
-		//створення масиву + заповнення випадковими числами
-
+		//заповнення випадковими числами
 		for (int i = 0; i < arr_size;i++) {
 			arr->push_back(rand() % 101);
 			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
 		}
 
-		OutputArrayLabel->Text += "\n";
-
-		for (vector<int>::iterator i = arr->begin(); i != arr->end();) {
-			if (*i % 3 == 0) {
-				i = arr->erase(i);
+		//індивідуальне завдання. Все шо ділиться на 3 тікає, а інше підноситься до квадрату
+		for (int i = 0; i < arr->size();) {
+			if ((*arr)[i] % 3 == 0) {
+				arr->erase(arr->begin()+i);
 			}
 			else {
-				*i = (*i) * (*i);
+				(*arr)[i] = (*arr)[i] * (*arr)[i];
 				i++;
 			}
 			
 		}
 
-		for (vector<int>::iterator i = arr->begin(); i != arr->end(); i++) {
-			OutputArrayLabel->Text += " " + Convert::ToString(*i);
+		//Вивід масиву після обробки індивідуального завдання
+		for (int i = 0; i < arr->size(); i++) {
+			IndividualTaskOutputLabel->Text += " " + Convert::ToString((*arr)[i]);
 		}
 		
 }
 private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	
 	ResultSortedArrayLabel->Text = "";
+	PartialResultOutputLabel->Text = " ";
 	stop_timer->Reset();
-
 
 	stop_timer->Start();
 
@@ -349,9 +411,11 @@ private: System::Void SortArrayButton_Click(System::Object^ sender, System::Even
 	//вивід часу + відсортованого масиву
 	CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
 
-	//for (int i = 0; i < arr->size();i++) {
-	//	ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
-	//}
+	for (int i = 0; i < arr->size();i++) {
+		ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
+	}
+}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }
