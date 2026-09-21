@@ -155,7 +155,7 @@ namespace lab1 {
 			this->ResultLabel->AutoSize = true;
 			this->ResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->ResultLabel->Location = System::Drawing::Point(200, 396);
+			this->ResultLabel->Location = System::Drawing::Point(200, 517);
 			this->ResultLabel->Name = L"ResultLabel";
 			this->ResultLabel->Size = System::Drawing::Size(87, 29);
 			this->ResultLabel->TabIndex = 4;
@@ -166,7 +166,7 @@ namespace lab1 {
 			this->ResultSortedArrayLabel->AutoSize = true;
 			this->ResultSortedArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 396);
+			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 517);
 			this->ResultSortedArrayLabel->Name = L"ResultSortedArrayLabel";
 			this->ResultSortedArrayLabel->Size = System::Drawing::Size(0, 29);
 			this->ResultSortedArrayLabel->TabIndex = 5;
@@ -331,13 +331,23 @@ namespace lab1 {
 
 		// вивід проміжного результату
 		sort_step++;
-		PartialResultOutputLabel->Text += "Step: " + Convert::ToString(sort_step) + " ";
+		int pivot_indx = i + 1;
 
-			for (int k = 0; k < arr_in.size(); k++) {
+		PartialResultOutputLabel->Text += "Step: " + Convert::ToString(sort_step) + "\n";
+		PartialResultOutputLabel->Text += "Left: ";
+			for (int k = low; k < pivot_indx; k++) {
 				PartialResultOutputLabel->Text += " " + Convert::ToString(arr_in[k]);
 			}
-			PartialResultOutputLabel->Text += "\n";
-		
+			
+		PartialResultOutputLabel->Text += " | ";
+		PartialResultOutputLabel->Text += "Pivot: " + arr_in[pivot_indx] + " | ";
+
+		PartialResultOutputLabel->Text += "Right: ";
+		for (int k = pivot_indx+1; k <= high; k++) {
+			PartialResultOutputLabel->Text += " " + Convert::ToString(arr_in[k]);
+		}
+
+		PartialResultOutputLabel->Text += "\n";
 		// повертає індекс на опору pivot
 		return i + 1;
 	}
