@@ -160,7 +160,7 @@ namespace lab1 {
 			this->ResultLabel->AutoSize = true;
 			this->ResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->ResultLabel->Location = System::Drawing::Point(54, 553);
+			this->ResultLabel->Location = System::Drawing::Point(47, 701);
 			this->ResultLabel->Name = L"ResultLabel";
 			this->ResultLabel->Size = System::Drawing::Size(87, 29);
 			this->ResultLabel->TabIndex = 4;
@@ -171,7 +171,7 @@ namespace lab1 {
 			this->ResultSortedArrayLabel->AutoSize = true;
 			this->ResultSortedArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->ResultSortedArrayLabel->Location = System::Drawing::Point(167, 553);
+			this->ResultSortedArrayLabel->Location = System::Drawing::Point(160, 701);
 			this->ResultSortedArrayLabel->Name = L"ResultSortedArrayLabel";
 			this->ResultSortedArrayLabel->Size = System::Drawing::Size(0, 29);
 			this->ResultSortedArrayLabel->TabIndex = 5;
@@ -278,7 +278,7 @@ namespace lab1 {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1023, 654);
+			this->ClientSize = System::Drawing::Size(1023, 751);
 			this->Controls->Add(this->CountTimerLabel);
 			this->Controls->Add(this->TimerLabel);
 			this->Controls->Add(this->SortArrayButton);
@@ -366,20 +366,33 @@ namespace lab1 {
 			for (int i = 0; i < mid; i++)
 				X.push_back(arr[i]);
 
+			PartialResultOutputLabel->Text += "X: ";
+			for (int i = 0;i < X.size();i++) {
+				PartialResultOutputLabel->Text += gcnew System::String(" ") + gcnew System::String(X[i].c_str());
+			}
+
 			//заповнення масиву Y
 			for (int i = mid; i < arr.size(); i++)
 				Y.push_back(arr[i]);
 
+			PartialResultOutputLabel->Text += "\n Y: ";
+			for (int i = 0;i < Y.size();i++) {
+				PartialResultOutputLabel->Text += gcnew System::String(" ") + gcnew System::String(Y[i].c_str());
+			}
+			PartialResultOutputLabel->Text += "\n";
+
+			
 			//рекурсія для обох масивів. Після рекурсії, масиви знову діляться навпіл
 			//поки не буде розміру <= 1 (ввжаається відсортованим).
 			MergeSort(X);
-			MergeSort(Y);
 
+			MergeSort(Y);
 			arr.clear();
 
 			//злиття обох масивів у одне ціле, параметри: лівий, правий, куди
 			Merge(X, Y, arr);
 
+			PartialResultOutputLabel->Text += "Z: ";
 			for (int i = 0; i < arr.size(); i++) {
 				PartialResultOutputLabel->Text += gcnew System::String(" ") + gcnew System::String(arr[i].c_str());
 			}
