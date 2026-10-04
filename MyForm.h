@@ -380,8 +380,7 @@ namespace lab1 {
 				PartialResultOutputLabel->Text += gcnew System::String(" ") + gcnew System::String(Y[i].c_str());
 			}
 			PartialResultOutputLabel->Text += "\n";
-
-			
+						
 			//рекурсія для обох масивів. Після рекурсії, масиви знову діляться навпіл
 			//поки не буде розміру <= 1 (ввжаається відсортованим).
 			MergeSort(X);
