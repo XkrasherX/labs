@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <iterator>
+#include <fstream>
 #pragma once
 
 namespace lab1 {
@@ -27,8 +28,8 @@ namespace lab1 {
 		MyForm(void)
 		{
 			InitializeComponent();
-			arr = new vector<int>();
-			max_inx_aray = new vector<int>();
+			arr = new vector<vector<int>>();
+			
 			stop_timer = gcnew System::Diagnostics::Stopwatch();
 		}
 
@@ -47,10 +48,7 @@ namespace lab1 {
 				delete arr;
 				arr = nullptr;
 			}
-			if (max_inx_aray) {
-				delete max_inx_aray;
-				max_inx_aray = nullptr;
-			}
+			
 		}
 	private: System::Windows::Forms::Label^ ArraySizeLabel;
 	private: System::Windows::Forms::TextBox^ ArraySizeTextBox;
@@ -60,9 +58,6 @@ namespace lab1 {
 	protected:
 
 	protected:
-
-
-
 
 
 	private: System::Windows::Forms::Label^ OutputGenRandNumLabel;
@@ -78,11 +73,10 @@ namespace lab1 {
 
 	
 	private: int arr_size;
-	private: vector<int>* arr;
-	private: vector<int>* max_inx_aray;
-	private: bool isSorted = false;
+	private: vector<vector<int>>* arr;
+	
 	private: System::Diagnostics::Stopwatch^ stop_timer;
-	private: System::Windows::Forms::Label^ IsSortedLabel;
+
 	private: System::Windows::Forms::Label^ CountTimerLabel;
 
 
@@ -103,7 +97,6 @@ namespace lab1 {
 			this->SortArrayButton = (gcnew System::Windows::Forms::Button());
 			this->TimerLabel = (gcnew System::Windows::Forms::Label());
 			this->CountTimerLabel = (gcnew System::Windows::Forms::Label());
-			this->IsSortedLabel = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// ArraySizeLabel
@@ -144,7 +137,7 @@ namespace lab1 {
 			this->ResultLabel->AutoSize = true;
 			this->ResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->ResultLabel->Location = System::Drawing::Point(200, 300);
+			this->ResultLabel->Location = System::Drawing::Point(200, 378);
 			this->ResultLabel->Name = L"ResultLabel";
 			this->ResultLabel->Size = System::Drawing::Size(87, 29);
 			this->ResultLabel->TabIndex = 4;
@@ -155,7 +148,7 @@ namespace lab1 {
 			this->ResultSortedArrayLabel->AutoSize = true;
 			this->ResultSortedArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 300);
+			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 378);
 			this->ResultSortedArrayLabel->Name = L"ResultSortedArrayLabel";
 			this->ResultSortedArrayLabel->Size = System::Drawing::Size(0, 29);
 			this->ResultSortedArrayLabel->TabIndex = 5;
@@ -198,7 +191,7 @@ namespace lab1 {
 			this->TimerLabel->AutoSize = true;
 			this->TimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->TimerLabel->Location = System::Drawing::Point(64, 396);
+			this->TimerLabel->Location = System::Drawing::Point(31, 473);
 			this->TimerLabel->Name = L"TimerLabel";
 			this->TimerLabel->Size = System::Drawing::Size(77, 29);
 			this->TimerLabel->TabIndex = 9;
@@ -209,27 +202,16 @@ namespace lab1 {
 			this->CountTimerLabel->AutoSize = true;
 			this->CountTimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->CountTimerLabel->Location = System::Drawing::Point(171, 396);
+			this->CountTimerLabel->Location = System::Drawing::Point(47, 526);
 			this->CountTimerLabel->Name = L"CountTimerLabel";
 			this->CountTimerLabel->Size = System::Drawing::Size(0, 29);
 			this->CountTimerLabel->TabIndex = 10;
-			// 
-			// IsSortedLabel
-			// 
-			this->IsSortedLabel->AutoSize = true;
-			this->IsSortedLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->IsSortedLabel->Location = System::Drawing::Point(200, 349);
-			this->IsSortedLabel->Name = L"IsSortedLabel";
-			this->IsSortedLabel->Size = System::Drawing::Size(0, 29);
-			this->IsSortedLabel->TabIndex = 11;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(708, 584);
-			this->Controls->Add(this->IsSortedLabel);
 			this->Controls->Add(this->CountTimerLabel);
 			this->Controls->Add(this->TimerLabel);
 			this->Controls->Add(this->SortArrayButton);
@@ -247,8 +229,122 @@ namespace lab1 {
 
 		}
 #pragma endregion
+//функція для збереження матриці у файл
+private: void saveDataToFile(ofstream& file, vector<vector<int>>& matrix) {
+	for (int i = 0; i < matrix.size(); i++) {
+		for (int j = 0; j < matrix[i].size(); j++) {
+			file << matrix[i][j] << " ";
+		}
+		file << endl;
+	}
+}
+
+//функція для підрахунку суми рядка
+private: int rowSum(vector<int>& row) {
+	int sum = 0;
+	for (int i = 0;i < row.size();i++) {
+		sum += row[i];
+	}
+	return sum;
+}
+
+//алгоритм сортування підрахунком
+private: vector<vector<int>> countingSort(vector<vector<int>>& matrix) {
+	
+	ofstream file("D:\\NYLP\\2k1s\\ASD\\labs\\lab4\\sorting_result.txt");
+	if (!file) {
+		return matrix;
+	}
+	file << "Matrix: \n";
+	saveDataToFile(file, matrix);
+
+	//розмір масиву
+	int n = matrix.size();
+
+	if (!n) return matrix;
+
+	//вектор для суми рядків
+	vector<int> sum(n,0);
+
+	//рахуємо суму кожного рядка
+	file << "\nSum: \n";
+	for (int i = 0; i < n; i++) {
+		sum[i] = rowSum(matrix[i]);
+		file << sum[i] << " ";
+	}
+
+	int maxSum = 0;
+
+	//знаходимо максимальну суму рядка
+	for (int i = 0; i < n; i++) {
+		maxSum = max(maxSum, sum[i]);
+	}
+
+	file << "\nMax Sum: " << maxSum << "\n";
+	
+	//вектор для підрахунку того, скільки разів зустрічається кожне число в масиві
+	vector<int> count(maxSum + 1, 0);
+
+
+	//підраховуємо кількість кожної суми
+	//цей цикл дає зрозуміти скільки разів число зустрічалося в масиві
+	for (int i = 0; i < n; i++) {
+		count[sum[i]]++;
+	}
+
+	//виводимо масив count після підрахунку
+	file << "\nArray count: \n";
+
+	for (int i = 0; i <= maxSum; i++) {
+		if (count[i] != 0) {
+			file << "Sum " << i << ": " << count[i] << endl;
+		}
+	}
+
+	file << endl;
+
+	//префіксні суми
+	for (int i = 1; i <= maxSum; i++) {
+		count[i] += count[i - 1]; //скільки всього елементів мають значення, яке <= i
+	}
+
+	file << "\nArray count after prefix sum:" << endl;
+
+	for (int i = 0; i <= maxSum; i++) {
+		if (count[i] != 0) {
+			file << i << ": " << count[i] << endl;
+		}
+	}
+
+	file << endl;
+
+
+	vector<vector<int>> result(n);
+	
+	//формуємо результат. Починаємо з кінця шоб однакові значення зберегли свій порядок
+	for (int i = n - 1; i >= 0; i--) {
+		//індекс куди вставити рядок
+		int index = count[sum[i]] - 1;
+
+		//перенесення всього рядка в результат
+		result[index] = matrix[i];
+		//індекс має зміститися на 1 позицію лівіше
+		count[sum[i]]--;
+
+		file << "row " << i + 1	<< ") Sum = " << sum[i] << ") position " << index + 1 << endl;
+	}
+
+	file << "\nResult: \n";
+	saveDataToFile(file, result);
+
+	file.close();
+	return result;
+}
+
 private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
+
+
 private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		OutputArrayLabel->Text = "";
 
@@ -256,74 +352,43 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 			arr_size = Convert::ToInt32(ArraySizeTextBox->Text);
 			if (arr_size <= 0) {
 				MessageBox::Show("Enter size > 0!","Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
 			}
 		}
 
-
 		srand(time(0));
 		arr->clear();
-		arr->reserve(arr_size);
+		arr->assign(arr_size, vector<int>(arr_size));
+
 		//створення масиву + заповнення випадковими числами
-
-		for (int i = 0; i < arr_size;i++) {
-			arr->push_back(rand() % 101);
-			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
+		for (int i = 0; i < arr->size();i++) {
+			for (int j = 0; j < arr->size();j++) {
+				(*arr)[i][j] = (rand() % 11);
+			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i][j]);
+			}
+			OutputArrayLabel->Text += "\n";
 		}
-
-		//індекс на макс. елемент в масиві
-		vector<int>::iterator max_index_it = max_element(arr->begin(), arr->end());
-
-		//копіювання масиву після макс. елемента
-		max_inx_aray->assign(max_index_it + 1, arr->end());
-
-		//видаляє елементи після макс.елемента, шоsб потім вставити туди відсортований масив
-		arr->erase(max_index_it+1, arr->end());
-		
 }
+
 private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	
 	ResultSortedArrayLabel->Text = "";
 	stop_timer->Reset();
 	stop_timer->Start();
 
-	//сортування Шела
-	if (!is_sorted(max_inx_aray->begin(), max_inx_aray->end())) {
-		int size = max_inx_aray->size();
-
-		for (int gap = size / 2; gap > 0; gap /= 2) {
-			for (int i = gap; i < size; i++) {
-
-				int temp = (*max_inx_aray)[i];
-				int j = i;
-
-				while (j >= gap && (*max_inx_aray)[j - gap] < temp) {
-					(*max_inx_aray)[j] = (*max_inx_aray)[j - gap];
-					j -= gap;
-				}
-				(*max_inx_aray)[j] = temp;
-			}
-			ResultSortedArrayLabel->Text += "Gap: " + gap + " ";
-			for (int k = 0; k < size; k++) {
-				ResultSortedArrayLabel->Text +=" " + Convert::ToString((*max_inx_aray)[k]);
-			}
-			ResultSortedArrayLabel->Text += "\n";
-		}
-	}
+	(*arr) = countingSort(*arr);
 
 	stop_timer->Stop();
 	
-	// перевірка чи відсортований масив
-	!is_sorted(max_inx_aray->begin(), max_inx_aray->end()) ? IsSortedLabel->Text = "Sorted!" : IsSortedLabel->Text = "Not Sorted!";
-	
-	//дописує до зрізаного масиву відсортовану частину
-	arr->insert(arr->end(), max_inx_aray->begin(), max_inx_aray->end());
-
-	//вивід часу + відсортованого масиву
 	CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
 
-	for (int i = 0; i < arr_size;i++) {
-		ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
+	for (int i = 0; i < arr->size();i++) {
+		for (int j = 0; j < arr->size();j++) {
+			ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i][j]);
+		}
+		ResultSortedArrayLabel->Text += "\n";
 	}
+
 }
 };
 }
