@@ -263,21 +263,17 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 		srand(time(0));
 		arr->clear();
 		arr->reserve(arr_size);
-		//створення масиву + заповнення випадковими числами
 
+		int min_r = -50;
+		int max_r = 51;
+
+		//створення масиву + заповнення випадковими числами
 		for (int i = 0; i < arr_size;i++) {
-			arr->push_back(rand() % 101);
+			arr->push_back(rand() % (max_r - min_r + 1) + min_r);
 			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
 		}
 
-		//індекс на макс. елемент в масиві
-		vector<int>::iterator max_index_it = max_element(arr->begin(), arr->end());
-
-		//копіювання масиву після макс. елемента
-		max_inx_aray->assign(max_index_it + 1, arr->end());
-
-		//видаляє елементи після макс.елемента, шоsб потім вставити туди відсортований масив
-		arr->erase(max_index_it+1, arr->end());
+		int min_num = (arr->begin(), arr->end());
 		
 }
 private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
