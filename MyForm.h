@@ -363,7 +363,7 @@ private: System::Void GenRandNumButton_Click(System::Object^ sender, System::Eve
 		//створення масиву + заповнення випадковими числами
 		for (int i = 0; i < arr->size();i++) {
 			for (int j = 0; j < arr->size();j++) {
-				(*arr)[i][j] = (rand() % 11);
+				(*arr)[i][j] = (rand() % 6);
 			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i][j]);
 			}
 			OutputArrayLabel->Text += "\n";
