@@ -13,9 +13,9 @@ int partition(vector<long long int>& arr, int low, long high)
 
     while (i <= j)
     {
-        while (i <= j && arr[i] > pivot) { i++; }
+        while (i <= j && arr[i] < pivot) { i++; }
 
-        while (i <= j && arr[j] <= pivot) { j--; }
+        while (i <= j && arr[j] >= pivot) { j--; }
 
         if (i < j)
         {

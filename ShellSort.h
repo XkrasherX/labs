@@ -12,7 +12,7 @@ void shellSort(vector<long long int>& arr) {
 			long temp = arr[i];
 			long j = i;
 
-			while (j >= gap && arr[j - gap] < temp) {
+			while (j >= gap && arr[j - gap] > temp) {
 				arr[j] = arr[j - gap];
 				j -= gap;
 			}

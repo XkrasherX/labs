@@ -234,14 +234,11 @@ namespace lab1 {
 
 		//файл для збережння початкового масиву
 		ofstream file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\output.txt");
-		//файл для збереження масиву після індивідуального завдання
-		ofstream individual_file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\individual.txt");
 		if (!file.is_open()) return;
-		if (!individual_file.is_open()) return;
+		
 
 		size_choise = ChoiseArraySizeComboBox->SelectedIndex;
 		
-
 		switch (size_choise)
 		{
 		case 0:
@@ -273,28 +270,19 @@ namespace lab1 {
 		arr->clear();
 		arr->reserve(arr_size);
 
-
 		//створення масиву + заповнення випадковими числами
-		int min_r = -13456;
-		int max_r = 45678;
 		for (long i = 0; i < arr_size;i++) {
-			arr->push_back(rand() % (max_r - min_r + 1) + min_r);
+			arr->push_back(rand() % INT_MAX);
 		}
 
 		for (long i = 0; i < arr_size;i++) {
 			file << (*arr)[i] << "\n";
 		}
-		//індивідуальне завдання
-		int min_num = *min_element(arr->begin(), arr->end());
-
-		individual_file << "Individual Task:\nMin nubmer: " << min_num << "\n";
-		for (long i = 0; i < arr_size;i++) {
-			if ((*arr)[i] < 0) (*arr)[i] = (*arr)[i] * min_num;
-			individual_file << (*arr)[i] << "\n";
-		}
+		
+		
 		MessageBox::Show("Array saved to file", "Result", MessageBoxButtons::OK);
 		file.close();
-		individual_file.close();
+
 	}
 	private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
 
@@ -329,8 +317,6 @@ namespace lab1 {
 			vector<long long int> res = countsort(*arr);
 			stop_timer->Stop();
 			arr->clear();
-			reverse(res.begin(), res.end());
-			copy(res.begin(), res.end(), back_inserter(*arr));
 			break;
 		}
 

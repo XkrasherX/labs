@@ -20,7 +20,7 @@ void Merge(vector<long long int>& X, vector<long long int>& Y, vector<long long 
 	while (i < X.size() && j < Y.size())
 	{
 
-		if (X[i] > Y[j])
+		if (X[i] < Y[j])
 		{
 			Z.push_back(X[i]);
 			i++;
