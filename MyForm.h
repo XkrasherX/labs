@@ -3,7 +3,14 @@
 #include <vector>
 #include <stdio.h>
 #include <algorithm>
-#include <iterator>
+#include <fstream>
+#include <msclr/marshal_cppstd.h>
+
+#include "ShellSort.h"
+#include "QuickSort.h"
+#include "MergeSort.h"
+#include "CountingSort.h"
+
 #pragma once
 
 namespace lab1 {
@@ -27,8 +34,7 @@ namespace lab1 {
 		MyForm(void)
 		{
 			InitializeComponent();
-			arr = new vector<int>();
-			max_inx_aray = new vector<int>();
+			arr = new vector<long long int>();
 			stop_timer = gcnew System::Diagnostics::Stopwatch();
 		}
 
@@ -47,16 +53,13 @@ namespace lab1 {
 				delete arr;
 				arr = nullptr;
 			}
-			if (max_inx_aray) {
-				delete max_inx_aray;
-				max_inx_aray = nullptr;
-			}
+
 		}
 	private: System::Windows::Forms::Label^ ArraySizeLabel;
-	private: System::Windows::Forms::TextBox^ ArraySizeTextBox;
+
 	private: System::Windows::Forms::Button^ GenRandNumButton;
-	private: System::Windows::Forms::Label^ ResultLabel;
-	private: System::Windows::Forms::Label^ ResultSortedArrayLabel;
+
+
 	protected:
 
 	protected:
@@ -65,8 +68,8 @@ namespace lab1 {
 
 
 
-	private: System::Windows::Forms::Label^ OutputGenRandNumLabel;
-	private: System::Windows::Forms::Label^ OutputArrayLabel;
+
+
 	private: System::Windows::Forms::Button^ SortArrayButton;
 
 	private: System::Windows::Forms::Label^ TimerLabel;
@@ -76,250 +79,273 @@ namespace lab1 {
 
 
 
-	
-	private: int arr_size;
-	private: vector<int>* arr;
-	private: vector<int>* max_inx_aray;
-	private: bool isSorted = false;
+
+	private: vector<long long int>* arr;
+	private: int arr_size = 0;
+	private: int choise = 0;
+	private: int size_choise = 0;
 	private: System::Diagnostics::Stopwatch^ stop_timer;
-	private: System::Windows::Forms::Label^ IsSortedLabel;
+	private: System::Windows::Forms::ComboBox^ SelectSortComboBox;
+	private: System::Windows::Forms::ComboBox^ ChoiseArraySizeComboBox;
+
+
+
+	private: System::Windows::Forms::Label^ ChoiseSortLabel;
+
+
 	private: System::Windows::Forms::Label^ CountTimerLabel;
 
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		void InitializeComponent(void)
-		{
-			this->ArraySizeLabel = (gcnew System::Windows::Forms::Label());
-			this->ArraySizeTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->GenRandNumButton = (gcnew System::Windows::Forms::Button());
-			this->ResultLabel = (gcnew System::Windows::Forms::Label());
-			this->ResultSortedArrayLabel = (gcnew System::Windows::Forms::Label());
-			this->OutputGenRandNumLabel = (gcnew System::Windows::Forms::Label());
-			this->OutputArrayLabel = (gcnew System::Windows::Forms::Label());
-			this->SortArrayButton = (gcnew System::Windows::Forms::Button());
-			this->TimerLabel = (gcnew System::Windows::Forms::Label());
-			this->CountTimerLabel = (gcnew System::Windows::Forms::Label());
-			this->IsSortedLabel = (gcnew System::Windows::Forms::Label());
-			this->SuspendLayout();
-			// 
-			// ArraySizeLabel
-			// 
-			this->ArraySizeLabel->AutoSize = true;
-			this->ArraySizeLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->ArraySizeLabel->Location = System::Drawing::Point(31, 54);
-			this->ArraySizeLabel->Name = L"ArraySizeLabel";
-			this->ArraySizeLabel->Size = System::Drawing::Size(210, 29);
-			this->ArraySizeLabel->TabIndex = 0;
-			this->ArraySizeLabel->Text = L"Enter size of array:";
-			// 
-			// ArraySizeTextBox
-			// 
-			this->ArraySizeTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->ArraySizeTextBox->Location = System::Drawing::Point(274, 54);
-			this->ArraySizeTextBox->Name = L"ArraySizeTextBox";
-			this->ArraySizeTextBox->Size = System::Drawing::Size(163, 35);
-			this->ArraySizeTextBox->TabIndex = 1;
-			this->ArraySizeTextBox->TextChanged += gcnew System::EventHandler(this, &MyForm::ArraySizeTextBox_TextChanged);
-			// 
-			// GenRandNumButton
-			// 
-			this->GenRandNumButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->GenRandNumButton->Location = System::Drawing::Point(36, 126);
-			this->GenRandNumButton->Name = L"GenRandNumButton";
-			this->GenRandNumButton->Size = System::Drawing::Size(135, 122);
-			this->GenRandNumButton->TabIndex = 2;
-			this->GenRandNumButton->Text = L"Generate Random Array";
-			this->GenRandNumButton->UseVisualStyleBackColor = true;
-			this->GenRandNumButton->Click += gcnew System::EventHandler(this, &MyForm::GenRandNumButton_Click);
-			// 
-			// ResultLabel
-			// 
-			this->ResultLabel->AutoSize = true;
-			this->ResultLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->ResultLabel->Location = System::Drawing::Point(200, 300);
-			this->ResultLabel->Name = L"ResultLabel";
-			this->ResultLabel->Size = System::Drawing::Size(87, 29);
-			this->ResultLabel->TabIndex = 4;
-			this->ResultLabel->Text = L"Result:";
-			// 
-			// ResultSortedArrayLabel
-			// 
-			this->ResultSortedArrayLabel->AutoSize = true;
-			this->ResultSortedArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->ResultSortedArrayLabel->Location = System::Drawing::Point(313, 300);
-			this->ResultSortedArrayLabel->Name = L"ResultSortedArrayLabel";
-			this->ResultSortedArrayLabel->Size = System::Drawing::Size(0, 29);
-			this->ResultSortedArrayLabel->TabIndex = 5;
-			// 
-			// OutputGenRandNumLabel
-			// 
-			this->OutputGenRandNumLabel->AutoSize = true;
-			this->OutputGenRandNumLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->OutputGenRandNumLabel->Location = System::Drawing::Point(200, 160);
-			this->OutputGenRandNumLabel->Name = L"OutputGenRandNumLabel";
-			this->OutputGenRandNumLabel->Size = System::Drawing::Size(90, 29);
-			this->OutputGenRandNumLabel->TabIndex = 6;
-			this->OutputGenRandNumLabel->Text = L"Output:";
-			// 
-			// OutputArrayLabel
-			// 
-			this->OutputArrayLabel->AutoSize = true;
-			this->OutputArrayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->OutputArrayLabel->Location = System::Drawing::Point(313, 160);
-			this->OutputArrayLabel->Name = L"OutputArrayLabel";
-			this->OutputArrayLabel->Size = System::Drawing::Size(0, 29);
-			this->OutputArrayLabel->TabIndex = 6;
-			// 
-			// SortArrayButton
-			// 
-			this->SortArrayButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->SortArrayButton->Location = System::Drawing::Point(52, 285);
-			this->SortArrayButton->Name = L"SortArrayButton";
-			this->SortArrayButton->Size = System::Drawing::Size(119, 58);
-			this->SortArrayButton->TabIndex = 7;
-			this->SortArrayButton->Text = L"Sort";
-			this->SortArrayButton->UseVisualStyleBackColor = true;
-			this->SortArrayButton->Click += gcnew System::EventHandler(this, &MyForm::SortArrayButton_Click);
-			// 
-			// TimerLabel
-			// 
-			this->TimerLabel->AutoSize = true;
-			this->TimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->TimerLabel->Location = System::Drawing::Point(64, 396);
-			this->TimerLabel->Name = L"TimerLabel";
-			this->TimerLabel->Size = System::Drawing::Size(77, 29);
-			this->TimerLabel->TabIndex = 9;
-			this->TimerLabel->Text = L"Timer";
-			// 
-			// CountTimerLabel
-			// 
-			this->CountTimerLabel->AutoSize = true;
-			this->CountTimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->CountTimerLabel->Location = System::Drawing::Point(171, 396);
-			this->CountTimerLabel->Name = L"CountTimerLabel";
-			this->CountTimerLabel->Size = System::Drawing::Size(0, 29);
-			this->CountTimerLabel->TabIndex = 10;
-			// 
-			// IsSortedLabel
-			// 
-			this->IsSortedLabel->AutoSize = true;
-			this->IsSortedLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->IsSortedLabel->Location = System::Drawing::Point(200, 349);
-			this->IsSortedLabel->Name = L"IsSortedLabel";
-			this->IsSortedLabel->Size = System::Drawing::Size(0, 29);
-			this->IsSortedLabel->TabIndex = 11;
-			// 
-			// MyForm
-			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
-			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(708, 584);
-			this->Controls->Add(this->IsSortedLabel);
-			this->Controls->Add(this->CountTimerLabel);
-			this->Controls->Add(this->TimerLabel);
-			this->Controls->Add(this->SortArrayButton);
-			this->Controls->Add(this->OutputArrayLabel);
-			this->Controls->Add(this->OutputGenRandNumLabel);
-			this->Controls->Add(this->ResultSortedArrayLabel);
-			this->Controls->Add(this->ResultLabel);
-			this->Controls->Add(this->GenRandNumButton);
-			this->Controls->Add(this->ArraySizeTextBox);
-			this->Controls->Add(this->ArraySizeLabel);
-			this->Name = L"MyForm";
-			this->Text = L"MyForm";
-			this->ResumeLayout(false);
-			this->PerformLayout();
+		   /// <summary>
+		   /// Required method for Designer support - do not modify
+		   /// the contents of this method with the code editor.
+		   /// </summary>
+		   void InitializeComponent(void)
+		   {
+			   this->ArraySizeLabel = (gcnew System::Windows::Forms::Label());
+			   this->GenRandNumButton = (gcnew System::Windows::Forms::Button());
+			   this->SortArrayButton = (gcnew System::Windows::Forms::Button());
+			   this->TimerLabel = (gcnew System::Windows::Forms::Label());
+			   this->CountTimerLabel = (gcnew System::Windows::Forms::Label());
+			   this->SelectSortComboBox = (gcnew System::Windows::Forms::ComboBox());
+			   this->ChoiseArraySizeComboBox = (gcnew System::Windows::Forms::ComboBox());
+			   this->ChoiseSortLabel = (gcnew System::Windows::Forms::Label());
+			   this->SuspendLayout();
+			   // 
+			   // ArraySizeLabel
+			   // 
+			   this->ArraySizeLabel->AutoSize = true;
+			   this->ArraySizeLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->ArraySizeLabel->Location = System::Drawing::Point(31, 54);
+			   this->ArraySizeLabel->Name = L"ArraySizeLabel";
+			   this->ArraySizeLabel->Size = System::Drawing::Size(229, 29);
+			   this->ArraySizeLabel->TabIndex = 0;
+			   this->ArraySizeLabel->Text = L"Choise size of array:";
+			   // 
+			   // GenRandNumButton
+			   // 
+			   this->GenRandNumButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->GenRandNumButton->Location = System::Drawing::Point(53, 287);
+			   this->GenRandNumButton->Name = L"GenRandNumButton";
+			   this->GenRandNumButton->Size = System::Drawing::Size(135, 122);
+			   this->GenRandNumButton->TabIndex = 2;
+			   this->GenRandNumButton->Text = L"Generate Random Array";
+			   this->GenRandNumButton->UseVisualStyleBackColor = true;
+			   this->GenRandNumButton->Click += gcnew System::EventHandler(this, &MyForm::GenRandNumButton_Click);
+			   // 
+			   // SortArrayButton
+			   // 
+			   this->SortArrayButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->SortArrayButton->Location = System::Drawing::Point(310, 287);
+			   this->SortArrayButton->Name = L"SortArrayButton";
+			   this->SortArrayButton->Size = System::Drawing::Size(119, 58);
+			   this->SortArrayButton->TabIndex = 7;
+			   this->SortArrayButton->Text = L"Sort";
+			   this->SortArrayButton->UseVisualStyleBackColor = true;
+			   this->SortArrayButton->Click += gcnew System::EventHandler(this, &MyForm::SortArrayButton_Click);
+			   // 
+			   // TimerLabel
+			   // 
+			   this->TimerLabel->AutoSize = true;
+			   this->TimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->TimerLabel->Location = System::Drawing::Point(31, 221);
+			   this->TimerLabel->Name = L"TimerLabel";
+			   this->TimerLabel->Size = System::Drawing::Size(83, 29);
+			   this->TimerLabel->TabIndex = 9;
+			   this->TimerLabel->Text = L"Timer:";
+			   // 
+			   // CountTimerLabel
+			   // 
+			   this->CountTimerLabel->AutoSize = true;
+			   this->CountTimerLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->CountTimerLabel->Location = System::Drawing::Point(135, 221);
+			   this->CountTimerLabel->Name = L"CountTimerLabel";
+			   this->CountTimerLabel->Size = System::Drawing::Size(0, 29);
+			   this->CountTimerLabel->TabIndex = 10;
+			   // 
+			   // SelectSortComboBox
+			   // 
+			   this->SelectSortComboBox->AllowDrop = true;
+			   this->SelectSortComboBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			   this->SelectSortComboBox->FormattingEnabled = true;
+			   this->SelectSortComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(4) {
+				   L"1 - Shell Sort", L"2 - Quick Sort",
+					   L"3 - Merge Sort", L"4 - Counting Sort"
+			   });
+			   this->SelectSortComboBox->Location = System::Drawing::Point(266, 148);
+			   this->SelectSortComboBox->Name = L"SelectSortComboBox";
+			   this->SelectSortComboBox->Size = System::Drawing::Size(163, 28);
+			   this->SelectSortComboBox->TabIndex = 11;
+			   // 
+			   // ChoiseArraySizeComboBox
+			   // 
+			   this->ChoiseArraySizeComboBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			   this->ChoiseArraySizeComboBox->FormattingEnabled = true;
+			   this->ChoiseArraySizeComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(7) {
+				   L"1024", L"4096", L"16384", L"65536",
+					   L"262144", L"1048576", L"4194304"
+			   });
+			   this->ChoiseArraySizeComboBox->Location = System::Drawing::Point(266, 55);
+			   this->ChoiseArraySizeComboBox->Name = L"ChoiseArraySizeComboBox";
+			   this->ChoiseArraySizeComboBox->Size = System::Drawing::Size(163, 28);
+			   this->ChoiseArraySizeComboBox->TabIndex = 14;
+			   // 
+			   // ChoiseSortLabel
+			   // 
+			   this->ChoiseSortLabel->AutoSize = true;
+			   this->ChoiseSortLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->ChoiseSortLabel->Location = System::Drawing::Point(31, 148);
+			   this->ChoiseSortLabel->Name = L"ChoiseSortLabel";
+			   this->ChoiseSortLabel->Size = System::Drawing::Size(145, 29);
+			   this->ChoiseSortLabel->TabIndex = 15;
+			   this->ChoiseSortLabel->Text = L"Choise Sort:";
+			   // 
+			   // MyForm
+			   // 
+			   this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
+			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			   this->ClientSize = System::Drawing::Size(505, 482);
+			   this->Controls->Add(this->ChoiseSortLabel);
+			   this->Controls->Add(this->ChoiseArraySizeComboBox);
+			   this->Controls->Add(this->SelectSortComboBox);
+			   this->Controls->Add(this->CountTimerLabel);
+			   this->Controls->Add(this->TimerLabel);
+			   this->Controls->Add(this->SortArrayButton);
+			   this->Controls->Add(this->GenRandNumButton);
+			   this->Controls->Add(this->ArraySizeLabel);
+			   this->Name = L"MyForm";
+			   this->Text = L"MyForm";
+			   this->ResumeLayout(false);
+			   this->PerformLayout();
 
-		}
+		   }
 #pragma endregion
-private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		OutputArrayLabel->Text = "";
 
-		if (!String::IsNullOrWhiteSpace(ArraySizeTextBox->Text)) {
-			arr_size = Convert::ToInt32(ArraySizeTextBox->Text);
-			if (arr_size <= 0) {
-				MessageBox::Show("Enter size > 0!","Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			}
+	private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		//файл для збережння початкового масиву
+		ofstream file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\output.txt");
+		//файл для збереження масиву після індивідуального завдання
+		ofstream individual_file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\individual.txt");
+		if (!file.is_open()) return;
+		if (!individual_file.is_open()) return;
+
+		size_choise = ChoiseArraySizeComboBox->SelectedIndex;
+		
+
+		switch (size_choise)
+		{
+		case 0:
+			arr_size = 1024;
+			break;
+		case 1:
+			arr_size = 4096;
+			break;
+		case 2:
+			arr_size = 16384;
+			break;
+		case 3:
+			arr_size = 65536;
+			break;
+		case 4:
+			arr_size = 262144;
+			break;
+		case 5:
+			arr_size = 1048576;
+			break;
+		case 6:
+			arr_size = 4194304;
+			break;
+
+		default:
+			break;
 		}
-
-
 		srand(time(0));
 		arr->clear();
 		arr->reserve(arr_size);
 
-		int min_r = -50;
-		int max_r = 51;
 
 		//створення масиву + заповнення випадковими числами
-		for (int i = 0; i < arr_size;i++) {
+		int min_r = -13456;
+		int max_r = 45678;
+		for (long i = 0; i < arr_size;i++) {
 			arr->push_back(rand() % (max_r - min_r + 1) + min_r);
-			OutputArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
 		}
 
-		int min_num = (arr->begin(), arr->end());
-		
-}
-private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
-	
-	ResultSortedArrayLabel->Text = "";
-	stop_timer->Reset();
-	stop_timer->Start();
-
-	//сортування Шела
-	if (!is_sorted(max_inx_aray->begin(), max_inx_aray->end())) {
-		int size = max_inx_aray->size();
-
-		for (int gap = size / 2; gap > 0; gap /= 2) {
-			for (int i = gap; i < size; i++) {
-
-				int temp = (*max_inx_aray)[i];
-				int j = i;
-
-				while (j >= gap && (*max_inx_aray)[j - gap] < temp) {
-					(*max_inx_aray)[j] = (*max_inx_aray)[j - gap];
-					j -= gap;
-				}
-				(*max_inx_aray)[j] = temp;
-			}
-			ResultSortedArrayLabel->Text += "Gap: " + gap + " ";
-			for (int k = 0; k < size; k++) {
-				ResultSortedArrayLabel->Text +=" " + Convert::ToString((*max_inx_aray)[k]);
-			}
-			ResultSortedArrayLabel->Text += "\n";
+		for (long i = 0; i < arr_size;i++) {
+			file << (*arr)[i] << "\n";
 		}
+		//індивідуальне завдання
+		int min_num = *min_element(arr->begin(), arr->end());
+
+		individual_file << "Individual Task:\nMin nubmer: " << min_num << "\n";
+		for (long i = 0; i < arr_size;i++) {
+			if ((*arr)[i] < 0) (*arr)[i] = (*arr)[i] * min_num;
+			individual_file << (*arr)[i] << "\n";
+		}
+		MessageBox::Show("Array saved to file", "Result", MessageBoxButtons::OK);
+		file.close();
+		individual_file.close();
+	}
+	private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		ofstream res_file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\result.txt");
+		choise = SelectSortComboBox->SelectedIndex;
+
+		stop_timer->Reset();
+
+		switch (choise)
+		{
+			//сортування Шелла
+		case 0:
+			stop_timer->Start();
+			shellSort(*arr);
+			stop_timer->Stop();
+			break;
+			//сортування квік сорт
+		case 1:
+			stop_timer->Start();
+			quickSort(*arr, 0, arr->size() - 1);
+			stop_timer->Stop();
+			break;
+			//сортування злиттям
+		case 2:
+			stop_timer->Start();
+			MergeSort(*arr);
+			stop_timer->Stop();
+			break;
+			//сортування підрахунком
+		case 3:
+			stop_timer->Start();
+			vector<long long int> res = countsort(*arr);
+			stop_timer->Stop();
+			arr->clear();
+			reverse(res.begin(), res.end());
+			copy(res.begin(), res.end(), back_inserter(*arr));
+			break;
+		}
+
+
+		CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
+
+		res_file << "Result: \nTimer: " << msclr::interop::marshal_as<std::string>(stop_timer->Elapsed.TotalMilliseconds.ToString("F6")) << "ms\n";
+
+		for (long long int i = 0; i < arr_size;i++) {
+			res_file << (*arr)[i] << "\n";
+		}
+		MessageBox::Show("Sorted array saved to a file", "Result", MessageBoxButtons::OK);
+		res_file.close();
 	}
 
-	stop_timer->Stop();
-	
-	// перевірка чи відсортований масив
-	!is_sorted(max_inx_aray->begin(), max_inx_aray->end()) ? IsSortedLabel->Text = "Sorted!" : IsSortedLabel->Text = "Not Sorted!";
-	
-	//дописує до зрізаного масиву відсортовану частину
-	arr->insert(arr->end(), max_inx_aray->begin(), max_inx_aray->end());
 
-	//вивід часу + відсортованого масиву
-	CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
-
-	for (int i = 0; i < arr_size;i++) {
-		ResultSortedArrayLabel->Text += " " + Convert::ToString((*arr)[i]);
-	}
-}
-};
+	};
 }
