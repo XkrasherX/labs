@@ -133,6 +133,7 @@
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RunSorting.h" />
     <ClInclude Include="CountingSort.h" />
     <ClInclude Include="MergeSort.h" />
     <ClInclude Include="MyForm.h">

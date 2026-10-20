@@ -1,84 +1,60 @@
-#pragma once
-#include <iostream>
 #include <vector>
 
-using namespace std;
+// Допоміжна функція злиття двох впорядкованих частин
+void merge(std::vector<int>& arr, std::vector<int>& temp, int left, int mid, int right) {
+    int i = left;      // Початок лівої частини
+    int j = mid + 1;   // Початок правої частини
+    int k = left;      // Поточна позиція в тимчасовому буфері
 
-void Merge(vector<long long int>& X, vector<long long int>& Y, vector<long long int>& Z)
-{
-	// X - лівий масив
-	// Y - правий масив
-	// Z - кінцевий результат
+    // Порівнюємо і зливаємо елементи в тимчасовий буфер
+    while (i <= mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        }
+        else {
+            temp[k++] = arr[j++];
+        }
+    }
 
+    // Залишки лівої частини
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
 
-	//індекс для X
-	int i = 0;
-	//індекс для Y
-	int j = 0;
+    // Залишки правої частини
+    while (j <= right) {
+        temp[k++] = arr[j++];
+    }
 
-	//поки розміри масивів більші за індекси
-	while (i < X.size() && j < Y.size())
-	{
-
-		if (X[i] < Y[j])
-		{
-			Z.push_back(X[i]);
-			i++;
-		}
-		//інакше правий елемент додається в кінцевий результат
-		//збільшується індекс правого масиву
-		else
-		{
-			Z.push_back(Y[j]);
-			j++;
-		}
-	}
-
-	//виконується поки індекс менший за розмір масиву
-	//все шо не порівнялося в першому циклі, записується в кінець масиву
-	while (i < X.size())
-	{
-		Z.push_back(X[i]);
-		i++;
-	}
-
-	while (j < Y.size())
-	{
-		Z.push_back(Y[j]);
-		j++;
-	}
+    // Копіюємо відсортовану ділянку з буфера назад в оригінальний масив
+    for (int idx = left; idx <= right; ++idx) {
+        arr[idx] = temp[idx];
+    }
 }
 
-void MergeSort(vector<long long int>& arr)
-{
-	//якшо масив < 1 тікає
-	if (arr.size() <= 1)
-		return;
+// Рекурсивний розділ масиву
+void mergeSortHelper(std::vector<int>& arr, std::vector<int>& temp, int left, int right) {
+    if (left >= right) return; // Базовий випадок (1 елемент)
 
-	//середина масиву
-	int mid = arr.size() / 2;
+    int mid = left + (right - left) / 2;
 
-	//Х - масив arr від першого елемента до arr[mid]
-	//Y - масив arr після arr[mid] і до кінця
-	vector<long long int> X;
-	vector<long long int> Y;
+    // Рекурсивно ділимо ліву і праву половини
+    mergeSortHelper(arr, temp, left, mid);
+    mergeSortHelper(arr, temp, mid + 1, right);
 
-	//заповнення масиву X
-	for (int i = 0; i < mid; i++)
-		X.push_back(arr[i]);
-
-	//заповнення масиву Y
-	for (int i = mid; i < arr.size(); i++)
-		Y.push_back(arr[i]);
-
-	//рекурсія для обох масивів. Після рекурсії, масиви знову діляться навпіл
-	//поки не буде розміру <= 1 (ввжаається відсортованим).
-	MergeSort(X);
-
-	MergeSort(Y);
-	arr.clear();
-
-	//злиття обох масивів у одне ціле, параметри: лівий, правий, куди
-	Merge(X, Y, arr);
-
+    // Зливаємо їх
+    merge(arr, temp, left, mid, right);
 }
+
+// Головна функція, яку викликає ваш Bench.h
+void MergeSort(std::vector<int>& arr) {
+    if (arr.size() <= 1) return;
+
+    // Створюємо буфер пам'яті РІВНО ОДИН РАЗ на весь процес
+    std::vector<int> temp(arr.size());
+
+    // Запускаємо сортування з межами 0 .. size-1
+    mergeSortHelper(arr, temp, 0, static_cast<int>(arr.size()) - 1);
+}
+
+

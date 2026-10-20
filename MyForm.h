@@ -1,15 +1,10 @@
 #include <time.h>
-#include <stdlib.h>
 #include <vector>
-#include <stdio.h>
-#include <algorithm>
 #include <fstream>
+#include <random>
+#include <algorithm>
 #include <msclr/marshal_cppstd.h>
-
-#include "ShellSort.h"
-#include "QuickSort.h"
-#include "MergeSort.h"
-#include "CountingSort.h"
+#include "RunSorting.h"
 
 #pragma once
 
@@ -34,8 +29,8 @@ namespace lab1 {
 		MyForm(void)
 		{
 			InitializeComponent();
-			arr = new vector<long long int>();
-			stop_timer = gcnew System::Diagnostics::Stopwatch();
+			arr = new vector<int>();
+			work = new vector<int>();
 		}
 
 
@@ -53,6 +48,10 @@ namespace lab1 {
 				delete arr;
 				arr = nullptr;
 			}
+			if (work) {
+				delete work;
+				work = nullptr;
+			}
 
 		}
 	private: System::Windows::Forms::Label^ ArraySizeLabel;
@@ -64,12 +63,6 @@ namespace lab1 {
 
 	protected:
 
-
-
-
-
-
-
 	private: System::Windows::Forms::Button^ SortArrayButton;
 
 	private: System::Windows::Forms::Label^ TimerLabel;
@@ -80,11 +73,11 @@ namespace lab1 {
 
 
 
-	private: vector<long long int>* arr;
+	private: vector<int>* arr;
+	private: vector<int>* work;
 	private: int arr_size = 0;
 	private: int choise = 0;
 	private: int size_choise = 0;
-	private: System::Diagnostics::Stopwatch^ stop_timer;
 	private: System::Windows::Forms::ComboBox^ SelectSortComboBox;
 	private: System::Windows::Forms::ComboBox^ ChoiseArraySizeComboBox;
 
@@ -206,7 +199,8 @@ namespace lab1 {
 			   this->ChoiseSortLabel->Size = System::Drawing::Size(145, 29);
 			   this->ChoiseSortLabel->TabIndex = 15;
 			   this->ChoiseSortLabel->Text = L"Choise Sort:";
-			   // 
+			   //
+
 			   // MyForm
 			   // 
 			   this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
@@ -231,107 +225,49 @@ namespace lab1 {
 	private: System::Void ArraySizeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void GenRandNumButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		size_choise = ChoiseArraySizeComboBox->SelectedIndex;
+		if (size_choise < 0) { MessageBox::Show("Select array size"); return; }
 
-		//файл для збережння початкового масиву
+		const int sizes[] = { 1024, 4096, 16384, 65536, 262144, 1048576, 4194304 };
+		arr_size = sizes[size_choise];
+
 		ofstream file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\output.txt");
 		if (!file.is_open()) return;
-		
 
-		size_choise = ChoiseArraySizeComboBox->SelectedIndex;
-		
-		switch (size_choise)
-		{
-		case 0:
-			arr_size = 1024;
-			break;
-		case 1:
-			arr_size = 4096;
-			break;
-		case 2:
-			arr_size = 16384;
-			break;
-		case 3:
-			arr_size = 65536;
-			break;
-		case 4:
-			arr_size = 262144;
-			break;
-		case 5:
-			arr_size = 1048576;
-			break;
-		case 6:
-			arr_size = 4194304;
-			break;
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<int> dist(1, 100001);
 
-		default:
-			break;
-		}
-		srand(time(0));
 		arr->clear();
 		arr->reserve(arr_size);
-
-		//створення масиву + заповнення випадковими числами
-		for (long i = 0; i < arr_size;i++) {
-			arr->push_back(rand() % INT_MAX);
+		for (int i = 0; i < arr_size; i++) {
+			arr->push_back(dist(gen));
+			file << (*arr)[i] << '\n';
 		}
-
-		for (long i = 0; i < arr_size;i++) {
-			file << (*arr)[i] << "\n";
-		}
-		
-		
-		MessageBox::Show("Array saved to file", "Result", MessageBoxButtons::OK);
 		file.close();
-
+		MessageBox::Show("Array saved to file", "Result", MessageBoxButtons::OK);
 	}
+	
 	private: System::Void SortArrayButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		choise = SelectSortComboBox->SelectedIndex;
+		if (arr->empty() || choise < 0) {
+			MessageBox::Show("Generate an array and select a sort first");
+			return;
+		}
+
+		warmUp(choise, *arr, *work);
+
+		*work = *arr; 
+		double time_ms = timedSort(choise, *work); 
+		
+		CountTimerLabel->Text = time_ms.ToString("F4") + " ms";
+			
 
 		ofstream res_file("D:\\NYLP\\2k1s\\ASD\\labs\\lab5\\result.txt");
-		choise = SelectSortComboBox->SelectedIndex;
-
-		stop_timer->Reset();
-
-		switch (choise)
-		{
-			//сортування Шелла
-		case 0:
-			stop_timer->Start();
-			shellSort(*arr);
-			stop_timer->Stop();
-			break;
-			//сортування квік сорт
-		case 1:
-			stop_timer->Start();
-			quickSort(*arr, 0, arr->size() - 1);
-			stop_timer->Stop();
-			break;
-			//сортування злиттям
-		case 2:
-			stop_timer->Start();
-			MergeSort(*arr);
-			stop_timer->Stop();
-			break;
-			//сортування підрахунком
-		case 3:
-			stop_timer->Start();
-			vector<long long int> res = countsort(*arr);
-			stop_timer->Stop();
-			arr->clear();
-			break;
-		}
-
-
-		CountTimerLabel->Text = stop_timer->Elapsed.TotalMilliseconds.ToString("F6") + "ms";
-
-		res_file << "Result: \nTimer: " << msclr::interop::marshal_as<std::string>(stop_timer->Elapsed.TotalMilliseconds.ToString("F6")) << "ms\n";
-
-		for (long long int i = 0; i < arr_size;i++) {
-			res_file << (*arr)[i] << "\n";
-		}
-		MessageBox::Show("Sorted array saved to a file", "Result", MessageBoxButtons::OK);
+		res_file << "Result:\nTimer: " << time_ms << " ms\n";
+		for (size_t i = 0; i < work->size(); i++) res_file << (*work)[i] << '\n';
 		res_file.close();
+
+		MessageBox::Show("Sorted array saved to a file", "Result", MessageBoxButtons::OK);
 	}
-
-
 	};
 }

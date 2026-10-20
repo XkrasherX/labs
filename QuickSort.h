@@ -5,38 +5,37 @@
 using namespace std;
 
 
-int partition(vector<long long int>& arr, int low, long high)
-{
-    long pivot = arr[high];  
-    int i = low;
-    int j = high - 1;
+int partition(std::vector<int>& arr_in,int low,int high) {
+	if (low < 0 || high < low) return low;
 
-    while (i <= j)
-    {
-        while (i <= j && arr[i] < pivot) { i++; }
+	// вибрати опору high - останій елемент
+	int pivot = arr_in[high];
 
-        while (i <= j && arr[j] >= pivot) { j--; }
+	  int i = low - 1;
 
-        if (i < j)
-        {
-            swap(arr[i], arr[j]);
-            i++;
-            j--;
-        }
-    }
+	//Обхід масиву arr[low..high-1] та переміщення всіх більших елементів за опору 
+	// вправо (за спаданням) arr_in[j] > pivot
+	// вліво (за зростанням) arr_in[j] < pivot
+	for (  int j = low; j < high; ++j) {
+		if (arr_in[j] < pivot) {
+			i++;
+			swap(arr_in[i], arr_in[j]);
+		}
+	}
 
-    swap(arr[i], arr[high]);
+	// перемістити опору між "підмасивами", де зліва більші елементи, справа - менші
+	swap(arr_in[i + 1], arr_in[high]);
 
-    return i;
+	// повертає індекс на опору pivot
+	return i + 1;
 }
 
-void quickSort(vector<long long int>& arr, int low, long high)
-{
-    if (low < high)
-    {
-        int pi = partition(arr, low, high);
+void quickSort(std::vector<  int>& arr_in,   int low,   int high) {
+	if (low < high) {
+		  int pi = partition(arr_in, low, high);
 
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
-    }
+		//рекурсія
+		quickSort(arr_in, low, pi - 1);
+		quickSort(arr_in, pi + 1, high);
+	}
 }

@@ -35,5 +35,8 @@
     <ClInclude Include="CountingSort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RunSorting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

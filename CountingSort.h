@@ -1,34 +1,28 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
 using namespace std;
 
-vector<long long int> countsort(vector<long long int>& arr) {
-    int n = arr.size();
+void countingSort(vector<int>& arr) {
 
-    // find the maximum element
-    long long int maxval = 0;
-    for (int i = 0; i < n; i++)
-        maxval = max(maxval, arr[i]);
-
-    // create and initialize cntArr array
-    vector<long long int> cntArr(maxval + 1, 0);
-
-    // count frequency of each element
-    for (int i = 0; i < n; i++)
-        cntArr[arr[i]]++;
-
-    // compute prefix sum
-    for (int i = 1; i <= maxval; i++)
-        cntArr[i] += cntArr[i - 1];
-
-    // build output array
-    vector<long long int> ans(n);
-    for (int i = n - 1; i >= 0; i--) {
-        ans[cntArr[arr[i]] - 1] = arr[i];
-        cntArr[arr[i]]--;
-    }
-    
-    return ans;
+	int n = arr.size();
+	int max = *max_element(arr.begin(), arr.end());
+	int min = *min_element(arr.begin(), arr.end());
+	int range = max - min + 1;
+	vector<int> count(range, 0);
+	for (int i = 0; i < n; i++) {
+		count[arr[i] - min]++;
+	}
+	for (int i = 1; i < range; i++) {
+		count[i] += count[i - 1];
+	}
+	vector<int> output(n);
+	for (int i = n - 1; i >= 0; i--) {
+		output[--count[arr[i] - min]] = arr[i];
+	}
+	for (int i = 0; i < n; i++) {
+		arr[i] = output[i];
+	}
 }
