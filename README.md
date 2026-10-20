@@ -80,7 +80,7 @@ For each gap, the algorithm moves smaller values to the right when necessary, pr
 
 1. 
    ```bash
-   git clone https://github.com/USERNAME/REPOSITORY.git
+   git clone https://github.com/XkrasherX/labs.git
    ```
 
 2. Open the solution (`.sln`) in **Visual Studio**.
